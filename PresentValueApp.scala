@@ -1,7 +1,7 @@
 // This piece of code is run on the spark-shell, not with the spark-submit.
 import org.apache.spark.sql.functions._
 import org.apache.poi.ss.formula.functions.FinanceLib
-val mydf1 = sqlContext.read.json("/user/aknatva/sample.dat")
+val mydf1 = sqlContext.read.json("/user/aknatva/sample.json")
 mydf1.show()
 //Below statement creates a UDF that accepts three variables and calculates present value (its a financial function)
 val getPvUdf = udf((wacc:Double,lor:Double,revenue:Double) => FinanceLib.pv(wacc,lor,revenue,0,false))
