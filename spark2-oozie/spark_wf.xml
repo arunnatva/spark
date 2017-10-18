@@ -1,0 +1,62 @@
+
+
+<workflow-app name="Oozie Smoke Test Workflow" xmlns="uri:oozie:workflow:0.4">
+<credentials>
+    <credential name='hive2-creds' type='hive2'>
+        <property>
+            <name>hive2.jdbc.url</name>
+            <value>${HS2_JDBC_URI}</value>
+        </property>
+        <property>
+            <name>hive2.server.principal</name>
+            <value>${HS2_SERVER_PRINCIPAL}</value>
+        </property>
+    </credential>
+    <credential name='hcat-creds' type='hcat'>
+        <property>
+            <name>hcat.metastore.uri</name>
+            <value>${HCAT_METASTORE_URI}</value>
+        </property>
+        <property>
+            <name>hcat.metastore.principal</name>
+            <value>${HCAT_METASTORE_PRINCIPAL}</value>
+        </property>
+    </credential>
+</credentials>
+
+<start to='oozie_spark_test' />
+
+
+    <action name="oozie_spark_test" cred="hcat-creds">
+        <spark xmlns="uri:oozie:spark-action:0.2">
+            <job-tracker>${JOB_TRACKER}</job-tracker>
+            <name-node>${NAMENODE}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.compress.map.output</name>
+                    <value>true</value>
+                </property>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${QUEUE_NAME}</value>
+                </property>
+            </configuration>
+            <master>yarn-cluster</master>
+            <mode>cluster</mode>
+            <name>Oozie spark action test</name>
+            <jar>${NAMENODE}/user/hadoop_esp_p/smoketests/test.py</jar>
+            <spark-opts> --files ${OOZIE_LIBPATH}/conf/hive-site.xml --executor-memory 8G --executor-cores 2 --num-executors 381 --conf spark.yarn.executor.memoryOverhead=4096 --conf spark.yarn.appMasterEnv.hive.metastore.uris=${HIVE_METASTORE_URI}</spark-opts>
+            <arg>/tmp/testfile</arg>
+            <file>${OOZIE_LIBPATH}/conf/hive-site.xml</file>
+        </spark>
+        <ok to="end" />
+        <error to="fail"/>
+    </action>
+
+    <kill name="fail">
+        <message>Workflow ${wf:id()} is Failed! message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+
+    <end name="end"/>
+
+</workflow-app>
