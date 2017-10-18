@@ -44,7 +44,7 @@
             <master>yarn-cluster</master>
             <mode>cluster</mode>
             <name>Oozie spark action test</name>
-            <jar>${NAMENODE}/user/hadoop_esp_p/smoketests/test.py</jar>
+            <jar>${NAMENODE}/user/aknatva/smoketests/test.py</jar>
             <spark-opts> --files ${OOZIE_LIBPATH}/conf/hive-site.xml --executor-memory 8G --executor-cores 2 --num-executors 381 --conf spark.yarn.executor.memoryOverhead=4096 --conf spark.yarn.appMasterEnv.hive.metastore.uris=${HIVE_METASTORE_URI}</spark-opts>
             <arg>/tmp/testfile</arg>
             <file>${OOZIE_LIBPATH}/conf/hive-site.xml</file>
