@@ -21,7 +21,7 @@ query:
 mydf = hive.executeQuery("select * from t1")
 
 create a hive table:
-hive.createTable("arun_test").column("col1","string").column("col2","string").create()
+hive.createTable("arun_test").ifNotExists().column("col1","string").column("col2","string").create()
 
 write data into hive table:
 mydf.write.format(HiveWarehouseSession().HIVE_WAREHOUSE_CONNECTOR).mode("append").option("table","arun_test").save()
