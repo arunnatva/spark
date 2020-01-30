@@ -6,8 +6,6 @@ open pyspark shell:
 ===================
 pyspark --jars /usr/hdp/current/hive_warehouse_connector/hive-warehouse-connector-assembly-1.0.0.3.1.0.0-78.jar --py-files /usr/hdp/current/hive_warehouse_connector/pyspark_hwc-1.0.0.3.1.0.0-78.zip
 
-$cat sparktest.py
-
 import os,sys
 from pyspark_llap import HiveWarehouseSession
 from pyspark.sql import SparkSession
