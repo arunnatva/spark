@@ -1,0 +1,19 @@
+spark-shell --name "xmltest" --master yarn --driver-memory 4g --num-executors 4 --executor-memory 5g --conf spark.serializer=org.apache.spark.serializer.KryoSerializer --jars /usr/hdp/current/hive_warehouse_connector/hive-warehouse-connector-assembly-1.0.0.3.1.0.0-78.jar,/home/arun/spark-xml_2.11-0.8.0.jar
+
+
+
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions.udf
+import scala.reflect.runtime.universe.{TypeTag, typeTag}
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql._
+import org.apache.spark.storage.StorageLevel._
+
+val xml_file="hdfs://path/to/xmlfile.xml"
+
+val xml_df = spark.sqlContext.read.format("com.databricks.spark.xml").option("rowTag", "tagRec").load(xml_file)
+
+val df_stg1 = xml_df.select($"FirstName",$"LegalName._VALUE" as "LegalName",concat_ws(",",$"BusinessEntity.OtherNames.OtherName._VALUE") as "OtherName",$"Entity.BusinessAddress.AddrLn1" as "BusAddr_AddrLn1", concat_ws(",",$"Entity.BusinessAddr.AddlAddrLn") as "BusAddr_AddlAddrLn",$"BusinessAddr.City" as "City",$"BusinessAddr.Region" as "Region",$"BusinessAddr.Country" as "Country",$"BusinessAddr.zip" as "zip")
+
+df_stg1.write.csv("/user/arun/CsvFormattedXml")
